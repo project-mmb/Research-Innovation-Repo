@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EngineRouteImport } from './routes/engine'
 import { Route as InsightsRouteImport } from './routes/insights'
 import { Route as ListingsRouteImport } from './routes/listings'
 import { Route as SettingsRouteImport } from './routes/settings'
@@ -17,6 +18,11 @@ import { Route as SettingsRouteImport } from './routes/settings'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EngineRoute = EngineRouteImport.update({
+  id: '/engine',
+  path: '/engine',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InsightsRoute = InsightsRouteImport.update({
@@ -37,12 +43,14 @@ const SettingsRoute = SettingsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/engine': typeof EngineRoute
   '/insights': typeof InsightsRoute
   '/listings': typeof ListingsRoute
   '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/engine': typeof EngineRoute
   '/insights': typeof InsightsRoute
   '/listings': typeof ListingsRoute
   '/settings': typeof SettingsRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/engine': typeof EngineRoute
   '/insights': typeof InsightsRoute
   '/listings': typeof ListingsRoute
   '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/insights' | '/listings' | '/settings'
+  fullPaths: '/' | '/engine' | '/insights' | '/listings' | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/insights' | '/listings' | '/settings'
-  id: '__root__' | '/' | '/insights' | '/listings' | '/settings'
+  to: '/' | '/engine' | '/insights' | '/listings' | '/settings'
+  id: '__root__' | '/' | '/engine' | '/insights' | '/listings' | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EngineRoute: typeof EngineRoute
   InsightsRoute: typeof InsightsRoute
   ListingsRoute: typeof ListingsRoute
   SettingsRoute: typeof SettingsRoute
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/engine': {
+      id: '/engine'
+      path: '/engine'
+      fullPath: '/engine'
+      preLoaderRoute: typeof EngineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/insights': {
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EngineRoute: EngineRoute,
   InsightsRoute: InsightsRoute,
   ListingsRoute: ListingsRoute,
   SettingsRoute: SettingsRoute,

@@ -1,0 +1,25 @@
+server:
+  port: ${PORT:8081}
+
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:mysql://localhost:3306/markham?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DATABASE_USERNAME:markham}
+    password: ${DATABASE_PASSWORD:markham-dev-only}
+    hikari:
+      maximum-pool-size: 12
+      connection-timeout: 3000
+  sql:
+    init:
+      mode: always
+      continue-on-error: false
+
+markham:
+  security:
+    api-key: ${MARKHAM_API_KEY:}
+  cors:
+    allowed-origin: ${MARKHAM_FRONTEND_ORIGIN:http://localhost:5173}
+  routing:
+    openrouteservice:
+      api-key: ${MARKHAM_ORS_API_KEY:}
+      directions-url: ${MARKHAM_ORS_DIRECTIONS_URL:https://api.openrouteservice.org/v2/directions/driving-car/json}

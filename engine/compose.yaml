@@ -1,0 +1,36 @@
+services:
+  database:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: markham
+      MYSQL_USER: markham
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD:-markham-dev-only}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root-dev-only}
+    ports:
+      - "3306:3306"
+    volumes:
+      - markham-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  engine:
+    build: .
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:mysql://database:3306/markham?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      DATABASE_USERNAME: markham
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-markham-dev-only}
+      MARKHAM_API_KEY: ${MARKHAM_API_KEY:-local-dev-change-me}
+      MARKHAM_FRONTEND_ORIGIN: ${MARKHAM_FRONTEND_ORIGIN:-http://localhost:5173}
+      MARKHAM_ORS_API_KEY: ${MARKHAM_ORS_API_KEY:-}
+      MARKHAM_ORS_DIRECTIONS_URL: ${MARKHAM_ORS_DIRECTIONS_URL:-https://api.openrouteservice.org/v2/directions/driving-car/json}
+    ports:
+      - "8081:8081"
+
+volumes:
+  markham-mysql:
